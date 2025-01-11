@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HORIZON - Travel Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Logo Page */
+        .logo-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        }
+        .logo {
+            font-size: 5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: scale-up 2s infinite alternate;
+        }
+        .tagline {
+            font-size: 1.2rem;
+            font-style: italic;
+            font-weight: bold;
+            color: #495057;
+            margin-top: 0.5rem;
+        }
+        .login-button {
+            margin-top: 2rem;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Keyframes */
+        @keyframes scale-up {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* Login and Home Page Shared Styles */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .recommendations img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        /* Settings Icon */
+        .settings-icon {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #007bff;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Dropdown Menu for Settings */
+        .settings-dropdown {
+            display: none;
+            position: fixed;
+            top: 40px;
+            left: 10px;
+            background-color: #f8f9fa;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 200px;
+            padding: 10px;
+            z-index: 999;
+        }
+
+        .settings-dropdown a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .settings-dropdown a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Show dropdown when clicked on settings icon */
+        .settings-dropdown.show {
+            display: block;
+        }
+
+        /* Chat Bot Styling */
+        .chatbot {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+            height: 400px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .chatbot-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        .chatbot-body {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .chatbot-footer {
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        .chatbot-footer input {
+            width: calc(100% - 60px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .chatbot-footer button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chatbot-footer button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Map Section */
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo Page -->
+    <div class="logo-page" id="logoPage">
+        <div class="logo">HORIZON</div>
+        <div class="tagline">Your Travel Partner for Unforgettable Adventures</div>
+        <button class="login-button" onclick="showLoginPage()">Login</button>
+    </div>
+
+    <!-- Login Page -->
+    <div class="container" id="loginPage" style="display: none;">
+        <h2>Login Form</h2>
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Settings Icon (Gear) -->
+    <div class="settings-icon" id="settingsIcon" onclick="toggleSettingsDropdown()">&#9881;</div>
+
+    <!-- Settings Dropdown Menu -->
+    <div class="settings-dropdown" id="settingsDropdown">
+        <a href="#" onclick="showProfile()">Profile</a>
+        <a href="#" onclick="showFAQs()">FAQs</a>
+        <a href="#" onclick="showMap()">Map</a>
+        <a href="#" onclick="showAboutUs()">About Us</a>
+    </div>
+
+    <!-- Home Page -->
+    <div class="container" id="homePage" style="display: none;">
+        <h2>Find Your Next Adventure</h2>
+        <form id="travelForm">
+            <label for="destination">Preferred Destination:</label>
+            <input type="text" id="destination" placeholder="Enter a city (e.g., Agra)">
+            <label for="budget">Budget Range (INR):</label>
+            <input type="number" id="budget" placeholder="Enter your budget">
+            <label for="activities">Preferred Activities:</label>
+            <select id="activities">
+                <option value="Sightseeing">Sightseeing</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Relaxation">Relaxation</option>
+                <option value="Pilgrimage">Pilgrimage</option>
+            </select>
+            <button type="button" onclick="getRecommendations()">Get Recommendations</button>
+        </form>
+        <div class="recommendations" id="recommendations">No recommendations found. Try adjusting your preferences.</div>
+    </div>
+
+    <!-- Chat Bot -->
+    <div class="chatbot" id="chatbot">
+        <div class="chatbot-header">Travel Assistant</div>
+        <div class="chatbot-body">
+            <p><strong>Bot:</strong> Hi! How can I assist you with your travel plans?</p>
+        </div>
+        <div class="chatbot-footer">
+            <input type="text" id="chatInput" placeholder="Ask me about your travel...">
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Google Map Section -->
+    <div id="map" style="display: none;"></div>
+
+    <script>
+        // Toggle Settings Dropdown
+        function toggleSettingsDropdown() {
+            const dropdown = document.getElementById('settingsDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Navigation between pages
+        function showLoginPage() {
+            document.getElementById("logoPage").style.display = "none";
+            document.getElementById("loginPage").style.display = "block";
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("homePage").style.display = "block";
+        }
+
+        // Placeholder functions for menu options
+        function showProfile() {
+            alert("Profile page clicked!");
+        }
+
+        function showFAQs() {
+            alert("FAQs page clicked!");
+        }
+
+        function showMap() {
+            document.getElementById("map").style.display = "block";
+            initializeMap();
+        }
+
+        function showAboutUs() {
+            alert("About Us page clicked!");
+        }
+
+        // Google Maps Initialization
+        function initializeMap() {
+            const mapOptions = {
+                zoom: 8,
+                center: { lat: 28.6139, lng: 77.2090 }, // New Delhi, example location
+                mapTypeId: 'roadmap'
+            };
+
+            const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        }
+
+        // Places Data
+        const places = {
+            "Agra": {
+                name: "Taj Mahal",
+                image: "https://cdn.pixabay.com/photo/2017/01/10/11/26/taj-mahal-1964099_960_720.jpg",
+                description: "Visit the magnificent Taj Mahal in Agra, one of the Seven Wonders of the World."
+            },
+            "Varanasi": {
+                name: "Varanasi Ghats",
+                image: "https://cdn.pixabay.com/photo/2017/08/01/03/00/india-2561156_960_720.jpg",
+                description: "Experience the spiritual energy at the ghats of Varanasi along the Ganges."
+            },
+            "Jaipur": {
+                name: "Hawa Mahal",
+                image: "https://images.unsplash.com/photo-1602837398317-c9b7fe86902a",
+                description: "Explore the stunning architecture of Hawa Mahal, the Palace of Winds in Jaipur."
+            },
+            "Udaipur": {
+                name: "City Palace",
+                image: "https://cdn.pixabay.com/photo/2016/10/30/05/25/india-1780402_960_720.jpg",
+            },
+            "Goa": {
+                name: "Baga Beach",
+                image: "https://cdn.pixabay.com/photo/2016/11/07/04/52/goa-1807630_960_720.jpg",
+            },
+            "Kerala": {
+                name: "Backwaters",
+                image: "https://cdn.pixabay.com/photo/2017/09/13/18/13/kerala-2745415_960_720.jpg",
+            },
+            "Delhi": {
+                name: "Red Fort",
+                image: "https://cdn.pixabay.com/photo/2017/01/06/13/46/india-1950735_960_720.jpg",
+            },
+            "Agra": {
+                name: "Taj Mahal",
+                image: "https://cdn.pixabay.com/photo/2017/01/10/11/26/taj-mahal-1964099_960_720.jpg",
+            },
+            "Madhya Pradesh": {
+                name: "Kanha National Park",
+                image: "https://cdn.pixabay.com/photo/2017/10/02/17/39/tiger-2814619_960_720.jpg",
+            },
+            "Rajasthan": {
+                name: "Amber Fort",
+                image: "https://cdn.pixabay.com/photo/2015/09/03/15/57/fort-916938_960_720.jpg",
+            },
+            "Mumbai": {
+                name: "Gateway of India",
+                image: "https://www.google.co.in/url?sa=i&url=https%3A%2F%2Ftheheritageart.com%2Fgateway-of-india-mumbai%2F&psig=AOvVaw0FSJp_nR5fM9M15gHCSxz8&ust=1736620487314000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCKDi3Knm64oDFQAAAAAdAAAAABAE",
+            }
+            // Add more places as necessary...
+        };
+
+        function getRecommendations() {
+            const recommendations = document.getElementById("recommendations");
+            const destination = document.getElementById("destination").value;
+            const budget = document.getElementById("budget").value;
+
+            if (places[destination]) {
+                const place = places[destination];
+                recommendations.innerHTML = `
+                    <h3>Recommended Place: ${place.name}</h3>
+                    <img src="${place.image}" alt="${place.name}">
+                    <p>${place.description}</p>
+                `;
+            } else {
+                recommendations.innerHTML = "No recommendations found for the given destination.";
+            }
+        }
+
+        // Chat bot logic
+        function sendChatMessage() {
+            const chatInput = document.getElementById("chatInput").value;
+            const chatbotBody = document.querySelector(".chatbot-body");
+            const botResponse = "You asked about: " + chatInput; // Placeholder bot response
+            //chatbotBody.innerHTML += <p><strong>You:</strong> ${chatInput}</p><p><strong>Bot:</strong> ${botResponse}</p>;
+            document.getElementById("chatInput").value = '';
+            chatbotBody.scrollTop = chatbotBody.scrollHeight; // Scroll to the bottom
+        }
+    </script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnx7y5I2pB0Q-GUs8-MLuNzvz93zOvkOs&callback=initializeMap" async defer></script>
+</body>
+</html>

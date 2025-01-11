@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Guide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Travel Guide</h1>
+        <form action="/generate_itinerary" method="POST">
+            <label for="destination">Destination</label>
+            <input type="text" id="destination" name="destination" required>
+
+            <label for="interests">Interests (e.g., adventure, relaxation, food)</label>
+            <input type="text" id="interests" name="interests" required>
+
+            <button type="submit">Generate Itinerary</button>
+        </form>
+
+        {% if itinerary %}
+            <h2>Suggested Itinerary</h2>
+            <pre>{{ itinerary }}</pre>
+
+            <h2>Nearby Attractions</h2>
+            <ul>
+                {% for place in nearby_places %}
+                    <li>{{ place }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
